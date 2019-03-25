@@ -1,0 +1,207 @@
+ASN_MODULE_SRCS=	\
+	MmsPdu.c	\
+	UnconfirmedPDU.c	\
+	UnconfirmedService.c	\
+	ConfirmedRequestPdu.c	\
+	ConfirmedResponsePdu.c	\
+	ConfirmedServiceRequest.c	\
+	ConfirmedServiceResponse.c	\
+	TimeOfDay.c	\
+	Identifier.c	\
+	Integer8.c	\
+	Integer16.c	\
+	Integer32.c	\
+	Unsigned8.c	\
+	Unsigned16.c	\
+	Unsigned32.c	\
+	MMSString.c	\
+	UtcTime.c	\
+	ObjectName.c	\
+	InitiateErrorPdu.c	\
+	InitiateRequestPdu.c	\
+	InitRequestDetail.c	\
+	InitiateResponsePdu.c	\
+	InitResponseDetail.c	\
+	ParameterSupportOptions.c	\
+	ServiceSupportOptions.c	\
+	ServiceError.c	\
+	GetNameListRequest.c	\
+	ObjectClass.c	\
+	GetNameListResponse.c	\
+	TypeSpecification.c	\
+	StructComponent.c	\
+	AlternateAccess.c	\
+	AlternateAccessSelection.c	\
+	IndexRangeSeq.c	\
+	ReadRequest.c	\
+	ReadResponse.c	\
+	WriteRequest.c	\
+	WriteResponse.c	\
+	GetVariableAccessAttributesRequest.c	\
+	GetVariableAccessAttributesResponse.c	\
+	InformationReport.c	\
+	DefineNamedVariableListRequest.c	\
+	DefineNamedVariableListResponse.c	\
+	GetNamedVariableListAttributesRequest.c	\
+	GetNamedVariableListAttributesResponse.c	\
+	DeleteNamedVariableListRequest.c	\
+	DeleteNamedVariableListResponse.c	\
+	AccessResult.c	\
+	DataAccessError.c	\
+	Data.c	\
+	DataSequence.c	\
+	FloatingPoint.c	\
+	VariableAccessSpecification.c	\
+	VariableDef.c	\
+	VariableSpecification.c	\
+	ScatteredAccessDescription.c
+
+ASN_MODULE_HDRS=	\
+	MmsPdu.h	\
+	UnconfirmedPDU.h	\
+	UnconfirmedService.h	\
+	ConfirmedRequestPdu.h	\
+	ConfirmedResponsePdu.h	\
+	ConfirmedServiceRequest.h	\
+	ConfirmedServiceResponse.h	\
+	TimeOfDay.h	\
+	Identifier.h	\
+	Integer8.h	\
+	Integer16.h	\
+	Integer32.h	\
+	Unsigned8.h	\
+	Unsigned16.h	\
+	Unsigned32.h	\
+	MMSString.h	\
+	UtcTime.h	\
+	ObjectName.h	\
+	InitiateErrorPdu.h	\
+	InitiateRequestPdu.h	\
+	InitRequestDetail.h	\
+	InitiateResponsePdu.h	\
+	InitResponseDetail.h	\
+	ParameterSupportOptions.h	\
+	ServiceSupportOptions.h	\
+	ServiceError.h	\
+	GetNameListRequest.h	\
+	ObjectClass.h	\
+	GetNameListResponse.h	\
+	TypeSpecification.h	\
+	StructComponent.h	\
+	AlternateAccess.h	\
+	AlternateAccessSelection.h	\
+	IndexRangeSeq.h	\
+	ReadRequest.h	\
+	ReadResponse.h	\
+	WriteRequest.h	\
+	WriteResponse.h	\
+	GetVariableAccessAttributesRequest.h	\
+	GetVariableAccessAttributesResponse.h	\
+	InformationReport.h	\
+	DefineNamedVariableListRequest.h	\
+	DefineNamedVariableListResponse.h	\
+	GetNamedVariableListAttributesRequest.h	\
+	GetNamedVariableListAttributesResponse.h	\
+	DeleteNamedVariableListRequest.h	\
+	DeleteNamedVariableListResponse.h	\
+	AccessResult.h	\
+	DataAccessError.h	\
+	Data.h	\
+	DataSequence.h	\
+	FloatingPoint.h	\
+	VariableAccessSpecification.h	\
+	VariableDef.h	\
+	VariableSpecification.h	\
+	ScatteredAccessDescription.h
+
+ASN_MODULE_HDRS+=OPEN_TYPE.h
+ASN_MODULE_SRCS+=OPEN_TYPE.c
+ASN_MODULE_HDRS+=constr_CHOICE.h
+ASN_MODULE_HDRS+=BOOLEAN.h
+ASN_MODULE_SRCS+=BOOLEAN.c
+ASN_MODULE_HDRS+=INTEGER.h
+ASN_MODULE_SRCS+=INTEGER.c
+ASN_MODULE_HDRS+=NULL.h
+ASN_MODULE_SRCS+=NULL.c
+ASN_MODULE_HDRS+=NativeInteger.h
+ASN_MODULE_SRCS+=NativeInteger.c
+ASN_MODULE_HDRS+=UTF8String.h
+ASN_MODULE_SRCS+=UTF8String.c
+ASN_MODULE_HDRS+=OCTET_STRING.h
+ASN_MODULE_HDRS+=VisibleString.h
+ASN_MODULE_SRCS+=VisibleString.c
+ASN_MODULE_HDRS+=asn_SEQUENCE_OF.h
+ASN_MODULE_SRCS+=asn_SEQUENCE_OF.c
+ASN_MODULE_HDRS+=asn_SET_OF.h
+ASN_MODULE_SRCS+=asn_SET_OF.c
+ASN_MODULE_SRCS+=constr_CHOICE.c
+ASN_MODULE_HDRS+=constr_SEQUENCE.h
+ASN_MODULE_SRCS+=constr_SEQUENCE.c
+ASN_MODULE_HDRS+=constr_SEQUENCE_OF.h
+ASN_MODULE_SRCS+=constr_SEQUENCE_OF.c
+ASN_MODULE_HDRS+=constr_SET_OF.h
+ASN_MODULE_SRCS+=constr_SET_OF.c
+ASN_MODULE_HDRS+=asn_application.h
+ASN_MODULE_SRCS+=asn_application.c
+ASN_MODULE_HDRS+=asn_ioc.h
+ASN_MODULE_HDRS+=asn_system.h
+ASN_MODULE_HDRS+=asn_codecs.h
+ASN_MODULE_HDRS+=asn_internal.h
+ASN_MODULE_SRCS+=asn_internal.c
+ASN_MODULE_HDRS+=asn_random_fill.h
+ASN_MODULE_SRCS+=asn_random_fill.c
+ASN_MODULE_HDRS+=asn_bit_data.h
+ASN_MODULE_SRCS+=asn_bit_data.c
+ASN_MODULE_SRCS+=OCTET_STRING.c
+ASN_MODULE_HDRS+=BIT_STRING.h
+ASN_MODULE_SRCS+=BIT_STRING.c
+ASN_MODULE_SRCS+=asn_codecs_prim.c
+ASN_MODULE_HDRS+=asn_codecs_prim.h
+ASN_MODULE_HDRS+=ber_tlv_length.h
+ASN_MODULE_SRCS+=ber_tlv_length.c
+ASN_MODULE_HDRS+=ber_tlv_tag.h
+ASN_MODULE_SRCS+=ber_tlv_tag.c
+ASN_MODULE_HDRS+=ber_decoder.h
+ASN_MODULE_SRCS+=ber_decoder.c
+ASN_MODULE_HDRS+=der_encoder.h
+ASN_MODULE_SRCS+=der_encoder.c
+ASN_MODULE_HDRS+=constr_TYPE.h
+ASN_MODULE_SRCS+=constr_TYPE.c
+ASN_MODULE_HDRS+=constraints.h
+ASN_MODULE_SRCS+=constraints.c
+ASN_MODULE_HDRS+=xer_support.h
+ASN_MODULE_SRCS+=xer_support.c
+ASN_MODULE_HDRS+=xer_decoder.h
+ASN_MODULE_SRCS+=xer_decoder.c
+ASN_MODULE_HDRS+=xer_encoder.h
+ASN_MODULE_SRCS+=xer_encoder.c
+ASN_MODULE_HDRS+=per_support.h
+ASN_MODULE_SRCS+=per_support.c
+ASN_MODULE_HDRS+=per_decoder.h
+ASN_MODULE_SRCS+=per_decoder.c
+ASN_MODULE_HDRS+=per_encoder.h
+ASN_MODULE_SRCS+=per_encoder.c
+ASN_MODULE_HDRS+=per_opentype.h
+ASN_MODULE_SRCS+=per_opentype.c
+ASN_MODULE_HDRS+=oer_decoder.h
+ASN_MODULE_HDRS+=oer_encoder.h
+ASN_MODULE_HDRS+=oer_support.h
+ASN_MODULE_SRCS+=oer_decoder.c
+ASN_MODULE_SRCS+=oer_encoder.c
+ASN_MODULE_SRCS+=oer_support.c
+ASN_MODULE_SRCS+=OPEN_TYPE_oer.c
+ASN_MODULE_SRCS+=INTEGER_oer.c
+ASN_MODULE_SRCS+=BIT_STRING_oer.c
+ASN_MODULE_SRCS+=OCTET_STRING_oer.c
+ASN_MODULE_SRCS+=NativeInteger_oer.c
+ASN_MODULE_SRCS+=constr_CHOICE_oer.c
+ASN_MODULE_SRCS+=constr_SEQUENCE_oer.c
+ASN_MODULE_SRCS+=constr_SET_OF_oer.c
+
+ASN_MODULE_CFLAGS=
+
+lib_LTLIBRARIES+=libasncodec.la
+libasncodec_la_SOURCES=$(ASN_MODULE_SRCS) $(ASN_MODULE_HDRS)
+libasncodec_la_CPPFLAGS=-I$(top_srcdir)/
+libasncodec_la_CFLAGS=$(ASN_MODULE_CFLAGS)
+libasncodec_la_LDFLAGS=-lm
