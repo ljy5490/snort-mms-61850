@@ -16,6 +16,7 @@ extern struct asn_TYPE_descriptor_s asn_DEF_Presentation_context_deletion_list;
 extern struct asn_TYPE_descriptor_s asn_DEF_Presentation_context_deletion_result_list;
 extern struct asn_TYPE_descriptor_s asn_DEF_Presentation_context_identifier_list;
 extern struct asn_TYPE_descriptor_s asn_DEF_Provider_reason;
+extern struct asn_TYPE_descriptor_s asn_DEF_EXTERNAL;
 
 
 struct asn_TYPE_descriptor_s *asn_pdu_collection[] = {
@@ -32,6 +33,8 @@ struct asn_TYPE_descriptor_s *asn_pdu_collection[] = {
 	&asn_DEF_Presentation_context_deletion_result_list,	
 	&asn_DEF_Presentation_context_identifier_list,	
 	&asn_DEF_Provider_reason,	
+	/* From module ASN1C-UsefulInformationObjectClasses in /usr/local/share/asn1c/standard-modules/ASN1C-UsefulInformationObjectClasses.asn1 */
+	&asn_DEF_EXTERNAL,	
 	0
 };
 

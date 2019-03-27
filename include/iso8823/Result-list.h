@@ -34,8 +34,8 @@ typedef enum Result_list__Member__provider_reason {
 /* Forward definitions */
 typedef struct Result_list__Member {
 	Result_t	 result;
-	Transfer_syntax_name_t	*transfer_syntax_name	/* OPTIONAL */;
-	long	*provider_reason	/* OPTIONAL */;
+	Transfer_syntax_name_t	*transfer_syntax_name;	/* OPTIONAL */
+	long	*provider_reason;	/* OPTIONAL */
 	
 	/* Context for parsing across buffer boundaries */
 	asn_struct_ctx_t _asn_ctx;

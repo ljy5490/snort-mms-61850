@@ -5,6 +5,8 @@
 #include "CPA-PPDU.h"
 #include "CPC-type.h"
 
+#include "ACSE-apdu.h"
+
 #include "MmsPdu.h"
 
 #include "detection/detection_engine.h"
@@ -57,20 +59,83 @@ struct spdu_parameter_header_t{
     uint8_t len;
 };
 
-void mms_decode(uint8_t *buf, int size){
+void mms_decode(Packet* p, uint8_t *buf, int size){
+
+    DpxFlowData *dfd = (DpxFlowData *)p->flow->get_flow_data(DpxFlowData::inspector_id);
+    if(!dfd){
+        printf("        ----mms_decode: dfd empty");
+	return;
+    }
+
     MmsPdu_t *mmsPdu = 0;
     asn_dec_rval_t rval;
 
     rval = ber_decode(0, &asn_DEF_MmsPdu, (void **)&mmsPdu, buf, size);
     if(rval.code == RC_OK){
 	printf("----MMS decode succeed\n");
+	
 	int ret = xer_fprint(NULL, &asn_DEF_MmsPdu, mmsPdu);
 	if(ret == -1){
 	    printf("----MMS xer_fprint failed\n");
 	}
+	
+	dfd->mms_session_data.type = mmsPdu->present;
+	//printf("--------MMS type is %d\n", mmsPdu->present);
+        
     }
     else{
 	printf("----MMS decode failed\n");
+    }
+}
+
+void acse_decode(Packet* p, uint8_t* buf, int size){
+
+    DpxFlowData *dfd = (DpxFlowData *)p->flow->get_flow_data(DpxFlowData::inspector_id);
+    if(!dfd){
+        printf("        ----acse_decode: dfd empty");
+	return;
+    }
+
+    ACSE_apdu_t *acsePdu = 0;
+    asn_dec_rval_t rval;
+
+    rval = ber_decode(0, &asn_DEF_ACSE_apdu, (void **)&acsePdu, buf, size);
+    if(rval.code == RC_OK){
+	printf("----ACSE decode succeed\n");
+	
+	int ret = xer_fprint(NULL, &asn_DEF_ACSE_apdu, acsePdu);
+	if(ret == -1){
+	    printf("----ACSE xer_fprint failed\n");
+	}
+
+	if(acsePdu->present == ACSE_apdu_PR_aarq){
+	    if(acsePdu->choice.aarq.user_information != NULL){
+	        EXTERNAL **external = (acsePdu->choice.aarq.user_information)->list.array;
+                printf("--------ACSE indirect-reference: %ld\n", *(external[0]->indirect_reference));
+	        if(external[0]->encoding.present == EXTERNAL__encoding_PR_single_ASN1_type){
+		    int size = (external[0]->encoding).choice.single_ASN1_type.size;
+	            uint8_t *buf = (external[0]->encoding).choice.single_ASN1_type.buf;
+	            printf("--------ACSE single asn1 type size: %d\n", size);
+		    mms_decode(p, buf, size);
+		}
+	    }
+	}
+
+	if(acsePdu->present == ACSE_apdu_PR_aare){
+	    if(acsePdu->choice.aare.user_information != NULL){
+	        EXTERNAL **external = (acsePdu->choice.aare.user_information)->list.array;
+                printf("--------ACSE indirect-reference: %ld\n", *(external[0]->indirect_reference));
+	        if(external[0]->encoding.present == EXTERNAL__encoding_PR_single_ASN1_type){
+		    int size = (external[0]->encoding).choice.single_ASN1_type.size;
+	            uint8_t *buf = (external[0]->encoding).choice.single_ASN1_type.buf;
+	            printf("--------ACSE single asn1 type size: %d\n", size);
+		    mms_decode(p, buf, size);
+		}
+	    }
+	}
+    }
+    else{
+	printf("----ACSE decode failed\n");
     }
 }
 
@@ -103,6 +168,22 @@ void iso8823_decode(Packet* p, int offset, int type){
 	        if(rval.code == RC_OK){
 		    printf("iso8823: CP-type decode succeed\n");
 		    int ret = xer_fprint(NULL, &asn_DEF_CP_type, cp_type);
+		    if(cp_type->normal_mode_parameters != NULL){
+			if(cp_type->normal_mode_parameters->user_data != NULL){
+			    User_data *user_data = cp_type->normal_mode_parameters->user_data;
+			    if(user_data->present == User_data_PR_fully_encoded_data){
+                                PDV_list **pdv_list = (((Fully_encoded_data_t)user_data->choice.fully_encoded_data).list).array;
+			        printf("----fully_encoded_data: %d\n", (((Fully_encoded_data_t)user_data->choice.fully_encoded_data).list).count);
+			        printf("----fully_encoded_data: %d\n", (((Fully_encoded_data_t)user_data->choice.fully_encoded_data).list).size);
+			        printf("----presentation-context-identifier: %lu\n", pdv_list[0]->presentation_context_identifier);
+
+			        printf("----single_ASN1_type size: %d\n", (pdv_list[0]->presentation_data_values).choice.single_ASN1_type.size);
+			        int size = (pdv_list[0]->presentation_data_values).choice.single_ASN1_type.size;
+			        uint8_t *buf = (pdv_list[0]->presentation_data_values).choice.single_ASN1_type.buf;
+			        acse_decode(p, buf, size);
+			    }
+			}
+		    }
 		}
 		else{
 		    printf("iso8823: CP-type decode failed\n");
@@ -116,7 +197,23 @@ void iso8823_decode(Packet* p, int offset, int type){
 	        if(rval.code == RC_OK){
 	    	    printf("iso8823: CPA-PPDU decode succeed\n");
 		    int ret = xer_fprint(NULL, &asn_DEF_CPA_PPDU, cpa_ppdu);
-	    	}
+	    	    if(cpa_ppdu->normal_mode_parameters != NULL){
+			if(cpa_ppdu->normal_mode_parameters->user_data != NULL){
+			    User_data *user_data = cpa_ppdu->normal_mode_parameters->user_data;
+			    if(user_data->present == User_data_PR_fully_encoded_data){
+                                PDV_list **pdv_list = (((Fully_encoded_data_t)user_data->choice.fully_encoded_data).list).array;
+			        printf("----fully_encoded_data: %d\n", (((Fully_encoded_data_t)user_data->choice.fully_encoded_data).list).count);
+			        printf("----fully_encoded_data: %d\n", (((Fully_encoded_data_t)user_data->choice.fully_encoded_data).list).size);
+			        printf("----presentation-context-identifier: %lu\n", pdv_list[0]->presentation_context_identifier);
+
+			        printf("----single_ASN1_type size: %d\n", (pdv_list[0]->presentation_data_values).choice.single_ASN1_type.size);
+			        int size = (pdv_list[0]->presentation_data_values).choice.single_ASN1_type.size;
+			        uint8_t *buf = (pdv_list[0]->presentation_data_values).choice.single_ASN1_type.buf;
+			        acse_decode(p, buf, size);
+			    }
+			}
+		    }
+		}
 	    	else{
 	    	    printf("iso8823: CPA-PPDU decode failed\n");
 	    	}
@@ -138,7 +235,7 @@ void iso8823_decode(Packet* p, int offset, int type){
 			printf("----single_ASN1_type size: %d\n", (pdv_list[0]->presentation_data_values).choice.single_ASN1_type.size);
 			int size = (pdv_list[0]->presentation_data_values).choice.single_ASN1_type.size;
 			uint8_t *buf = (pdv_list[0]->presentation_data_values).choice.single_ASN1_type.buf;
-			mms_decode(buf, size);
+			mms_decode(p, buf, size);
 		    }
 	    	}
 	    	else{
@@ -241,13 +338,20 @@ void cotp_decode(Packet* p, int offset){
     
     //printf("%d", *(p->data));
     //cout << hex << header->code << endl;
+    DpxFlowData *dfd = (DpxFlowData *)p->flow->get_flow_data(DpxFlowData::inspector_id);
+    if(!dfd){
+        printf("    ----cotp_decode: dfd empty");
+        return;
+    }
     
     switch(header->code){
         case COTP_CONNECTION_REQUEST:
 	    printf("%s\n", "cotp request found");
+	    dfd->reset_mms_session();
 	    break;
 	case COTP_CONNECTION_CONFIRM:
 	    printf("%s\n", "cotp confrim found");
+	    dfd->reset_mms_session();
 	    break;
 	case COTP_DATA:
     	    {
@@ -256,11 +360,6 @@ void cotp_decode(Packet* p, int offset){
 	        const cotp_data_header_t *data_header;
 	        data_header = (const cotp_data_header_t *)(p->data + offset);
 	        bool eof = data_header->eof_tpdu_num >> 7;
-	        DpxFlowData *dfd = (DpxFlowData *)p->flow->get_flow_data(DpxFlowData::inspector_id);
-	        if(!dfd){
-	            printf("    ----cotp_decode: dfd empty");
-	            return;
-	        }
 
 	        int segment_len = p->dsize - offset - sizeof(cotp_data_header_t);
 	        if(eof && dfd->cotp_data.head == NULL){
@@ -285,6 +384,7 @@ void cotp_decode(Packet* p, int offset){
 	            dfd->cotp_data.head = (uint8_t *)malloc(dfd->cotp_data.length * sizeof(uint8_t));
 	            memcpy(dfd->cotp_data.head, p->data+offset+sizeof(cotp_data_header_t), dfd->cotp_data.length);
 	            printf("    ----first segmented copt data packet, length = %d\n", dfd->cotp_data.length);
+		    dfd->reset_mms_session();
 		}
 	        else{
 	            //middle segmented copt data packet
@@ -295,12 +395,14 @@ void cotp_decode(Packet* p, int offset){
 		    dfd->cotp_data.length += segment_len;
 	            free(tmp);
 	            printf("    ----middle segmented copt data packet, length = %d\n", dfd->cotp_data.length);
-	        }
+	            dfd->reset_mms_session();
+		}
 		
 	    }	
 	    break;
 	default:
 	    printf("%s\n", "unknown cotp code found");
+	    dfd->reset_mms_session();
     }
     
     return;

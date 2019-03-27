@@ -34,7 +34,7 @@ typedef enum PDV_list__presentation_data_values_PR {
 
 /* PDV-list */
 typedef struct PDV_list {
-	Transfer_syntax_name_t	*transfer_syntax_name	/* OPTIONAL */;
+	Transfer_syntax_name_t	*transfer_syntax_name;	/* OPTIONAL */
 	Presentation_context_identifier_t	 presentation_context_identifier;
 	struct PDV_list__presentation_data_values {
 		PDV_list__presentation_data_values_PR present;

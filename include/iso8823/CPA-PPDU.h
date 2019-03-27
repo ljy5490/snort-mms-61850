@@ -44,14 +44,14 @@ struct User_data;
 typedef struct CPA_PPDU {
 	Mode_selector_t	 mode_selector;
 	struct CPA_PPDU__normal_mode_parameters {
-		Protocol_version_t	*protocol_version	/* DEFAULT {version-1} */;
-		Responding_presentation_selector_t	*responding_presentation_selector	/* OPTIONAL */;
-		struct Presentation_context_definition_result_list	*presentation_context_definition_result_list	/* OPTIONAL */;
-		Presentation_requirements_t	*presentation_requirements	/* OPTIONAL */;
-		User_session_requirements_t	*user_session_requirements	/* OPTIONAL */;
-		Protocol_options_t	*protocol_options	/* DEFAULT {} */;
-		Presentation_context_identifier_t	*responders_nominated_context	/* OPTIONAL */;
-		struct User_data	*user_data	/* OPTIONAL */;
+		Protocol_version_t	*protocol_version;	/* DEFAULT {version-1} */
+		Responding_presentation_selector_t	*responding_presentation_selector;	/* OPTIONAL */
+		struct Presentation_context_definition_result_list	*presentation_context_definition_result_list;	/* OPTIONAL */
+		Presentation_requirements_t	*presentation_requirements;	/* OPTIONAL */
+		User_session_requirements_t	*user_session_requirements;	/* OPTIONAL */
+		Protocol_options_t	*protocol_options;	/* DEFAULT {} */
+		Presentation_context_identifier_t	*responders_nominated_context;	/* OPTIONAL */
+		struct User_data	*user_data;	/* OPTIONAL */
 		
 		/* Context for parsing across buffer boundaries */
 		asn_struct_ctx_t _asn_ctx;

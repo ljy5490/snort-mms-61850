@@ -51,6 +51,8 @@ oer_type_decoder_f User_session_requirements_decode_oer;
 oer_type_encoder_f User_session_requirements_encode_oer;
 per_type_decoder_f User_session_requirements_decode_uper;
 per_type_encoder_f User_session_requirements_encode_uper;
+per_type_decoder_f User_session_requirements_decode_aper;
+per_type_encoder_f User_session_requirements_encode_aper;
 
 #ifdef __cplusplus
 }

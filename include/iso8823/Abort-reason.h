@@ -45,6 +45,8 @@ oer_type_decoder_f Abort_reason_decode_oer;
 oer_type_encoder_f Abort_reason_encode_oer;
 per_type_decoder_f Abort_reason_decode_uper;
 per_type_encoder_f Abort_reason_encode_uper;
+per_type_decoder_f Abort_reason_decode_aper;
+per_type_encoder_f Abort_reason_encode_aper;
 
 #ifdef __cplusplus
 }

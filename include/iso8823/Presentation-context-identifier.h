@@ -36,6 +36,8 @@ oer_type_decoder_f Presentation_context_identifier_decode_oer;
 oer_type_encoder_f Presentation_context_identifier_encode_oer;
 per_type_decoder_f Presentation_context_identifier_decode_uper;
 per_type_encoder_f Presentation_context_identifier_encode_uper;
+per_type_decoder_f Presentation_context_identifier_decode_aper;
+per_type_encoder_f Presentation_context_identifier_encode_aper;
 
 #ifdef __cplusplus
 }

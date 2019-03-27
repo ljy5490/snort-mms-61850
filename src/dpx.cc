@@ -127,7 +127,7 @@ void Dpx::eval(Packet* p)
     }
 
     tpkt_decode(p);
-    
+
     ++dpxstats.total_packets;
 }
 

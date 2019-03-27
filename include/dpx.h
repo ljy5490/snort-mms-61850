@@ -9,6 +9,10 @@ struct cotp_segment_data_t{
     int length = 0;
 };
 
+struct mms_session_data_t{
+    uint8_t type = 100;
+};
+
 class DpxFlowData : public snort::FlowData{
     public:
         DpxFlowData();
@@ -24,9 +28,14 @@ class DpxFlowData : public snort::FlowData{
 	    cotp_data.head = NULL;
 	}
 
+	void reset_mms_session(){
+	    mms_session_data.type = 100;
+	}
+
     public:
 	static unsigned inspector_id;
 	cotp_segment_data_t cotp_data;
+	mms_session_data_t mms_session_data;
 };
 
 #endif
