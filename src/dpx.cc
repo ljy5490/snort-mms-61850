@@ -257,9 +257,13 @@ static const InspectApi dpx_api
     nullptr  // reset
 };
 
+//extern const BaseApi* ips_pkt_num;
+extern const BaseApi* ips_dpx_func;
+
 SO_PUBLIC const BaseApi* snort_plugins[] =
 {
     &dpx_api.base,
+    ips_dpx_func,
     nullptr
 };
 

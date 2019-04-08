@@ -47,25 +47,12 @@ struct dpx_func_map_t
 
 static dpx_func_map_t func_map[] =
 {
-    { "read_coils", 1 },
-    { "read_discrete_inputs", 2 },
-    { "read_holding_registers", 3 },
-    { "read_input_registers", 4 },
-    { "write_single_coil", 5 },
-    { "write_single_register", 6 },
-    { "read_exception_status", 7 },
-    { "diagnostics", 8 },
-    { "get_comm_event_counter", 11 },
-    { "get_comm_event_log", 12 },
-    { "write_multiple_coils", 15 },
-    { "write_multiple_registers", 16 },
-    { "report_slave_id", 17 },
-    { "read_file_record", 20 },
-    { "write_file_record", 21 },
-    { "mask_write_register", 22 },
-    { "read_write_multiple_registers", 23 },
-    { "read_fifo_queue", 24 },
-    { "encapsulated_interface_transport", 43 }
+    { "confirmed_request", 0 },
+    { "confirmed_response", 1 },
+    { "unconfirmed", 3 },
+    { "initiate_request", 8 },
+    { "initiate_response", 9 },
+    { "initiate_error", 10 }
 };
 
 static bool get_func(const char* s, long& n)
