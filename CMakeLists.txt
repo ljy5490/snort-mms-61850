@@ -13,7 +13,7 @@ include ( FindPkgConfig )
 pkg_search_module ( SNORT3 REQUIRED snort>=3 )
 
 #file(GLOB SOURCES dpx.cc tpkt_paf.cc tpkt.cc)
-file(GLOB SOURCES "src/*" "src/iso8823/*" "src/mms/*" "src/acse/*")
+file(GLOB SOURCES "src/*" "src/asn1_iso8823/*" "src/asn1_mms/*" "src/asn1_acse/*")
 
 add_library (
     dpx MODULE
@@ -39,9 +39,9 @@ target_include_directories (
     dpx PUBLIC
     ${SNORT3_INCLUDE_DIRS}
     PUBLIC include
-    PUBLIC include/iso8823
-    PUBLIC include/mms
-    PUBLIC include/acse
+    PUBLIC include/asn1_iso8823
+    PUBLIC include/asn1_mms
+    PUBLIC include/asn1_acse
 )
 
 install (
