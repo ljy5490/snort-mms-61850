@@ -17,7 +17,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //--------------------------------------------------------------------------
 
-// ips_dpx_func.cc author Russ Combs <rucombs@cisco.com>
+// ips_iec61850_func.cc author Jianyu Li <jianyu.li@ait.ac.at>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -29,23 +29,23 @@
 #include "protocols/packet.h"
 #include "profiler/profiler.h"
 
-#include "dpx.h"
+#include "iec61850.h"
 
 using namespace snort;
 
-static const char* s_name = "dpx_func";
+static const char* s_name = "iec61850_func";
 
 //-------------------------------------------------------------------------
 // func lookup
 //-------------------------------------------------------------------------
 
-struct dpx_func_map_t
+struct iec61850_func_map_t
 {
     const char* name;
     uint8_t func;
 };
 
-static dpx_func_map_t func_map[] =
+static iec61850_func_map_t func_map[] =
 {
     { "confirmed_request", 0 },
     { "confirmed_response", 1 },
@@ -57,7 +57,7 @@ static dpx_func_map_t func_map[] =
 
 static bool get_func(const char* s, long& n)
 {
-    constexpr size_t max = (sizeof(func_map) / sizeof(dpx_func_map_t));
+    constexpr size_t max = (sizeof(func_map) / sizeof(iec61850_func_map_t));
 
     for ( size_t i = 0; i < max; ++i )
     {
@@ -74,12 +74,12 @@ static bool get_func(const char* s, long& n)
 // func option
 //-------------------------------------------------------------------------
 
-static THREAD_LOCAL ProfileStats dpx_func_prof;
+static THREAD_LOCAL ProfileStats iec61850_func_prof;
 
-class DpxFuncOption : public IpsOption
+class Iec61850FuncOption : public IpsOption
 {
 public:
-    DpxFuncOption(uint8_t v) : IpsOption(s_name)
+    Iec61850FuncOption(uint8_t v) : IpsOption(s_name)
     { func = v; }
 
     uint32_t hash() const override;
@@ -91,7 +91,7 @@ public:
     uint8_t func;
 };
 
-uint32_t DpxFuncOption::hash() const
+uint32_t Iec61850FuncOption::hash() const
 {
     uint32_t a = func, b = 0, c = 0;
 
@@ -101,18 +101,18 @@ uint32_t DpxFuncOption::hash() const
     return c;
 }
 
-bool DpxFuncOption::operator==(const IpsOption& ips) const
+bool Iec61850FuncOption::operator==(const IpsOption& ips) const
 {
     if ( strcmp(get_name(), ips.get_name()) )
         return false;
 
-    const DpxFuncOption& rhs = (const DpxFuncOption&)ips;
+    const Iec61850FuncOption& rhs = (const Iec61850FuncOption&)ips;
     return ( func == rhs.func );
 }
 
-IpsOption::EvalStatus DpxFuncOption::eval(Cursor&, Packet* p)
+IpsOption::EvalStatus Iec61850FuncOption::eval(Cursor&, Packet* p)
 {
-    Profile profile(dpx_func_prof);
+    Profile profile(iec61850_func_prof);
 
     if ( !p->flow )
         return NO_MATCH;
@@ -120,8 +120,8 @@ IpsOption::EvalStatus DpxFuncOption::eval(Cursor&, Packet* p)
     if ( !p->is_full_pdu() )
         return NO_MATCH;
 
-    DpxFlowData* mfd =
-        (DpxFlowData*)p->flow->get_flow_data(DpxFlowData::inspector_id);
+    Iec61850FlowData* mfd =
+        (Iec61850FlowData*)p->flow->get_flow_data(Iec61850FlowData::inspector_id);
 
     if ( mfd and func == mfd->mms_session_data.type )
         return MATCH;
@@ -142,17 +142,17 @@ static const Parameter s_params[] =
 };
 
 #define s_help \
-    "rule option to check dpx function code"
+    "rule option to check iec61850 function code"
 
-class DpxFuncModule : public Module
+class Iec61850FuncModule : public Module
 {
 public:
-    DpxFuncModule() : Module(s_name, s_help, s_params) { }
+    Iec61850FuncModule() : Module(s_name, s_help, s_params) { }
 
     bool set(const char*, Value&, SnortConfig*) override;
 
     ProfileStats* get_profile() const override
-    { return &dpx_func_prof; }
+    { return &iec61850_func_prof; }
 
     Usage get_usage() const override
     { return DETECT; }
@@ -161,7 +161,7 @@ public:
     uint8_t func;
 };
 
-bool DpxFuncModule::set(const char*, Value& v, SnortConfig*)
+bool Iec61850FuncModule::set(const char*, Value& v, SnortConfig*)
 {
     if ( !v.is("~") )
         return false;
@@ -186,7 +186,7 @@ bool DpxFuncModule::set(const char*, Value& v, SnortConfig*)
 
 static Module* mod_ctor()
 {
-    return new DpxFuncModule;
+    return new Iec61850FuncModule;
 }
 
 static void mod_dtor(Module* m)
@@ -196,8 +196,8 @@ static void mod_dtor(Module* m)
 
 static IpsOption* opt_ctor(Module* m, OptTreeNode*)
 {
-    DpxFuncModule* mod = (DpxFuncModule*)m;
-    return new DpxFuncOption(mod->func);
+    Iec61850FuncModule* mod = (Iec61850FuncModule*)m;
+    return new Iec61850FuncOption(mod->func);
 }
 
 static void opt_dtor(IpsOption* p)
@@ -230,5 +230,5 @@ static const IpsApi ips_api =
     nullptr
 };
 
-const BaseApi* ips_dpx_func = &ips_api.base;
+const BaseApi* ips_iec61850_func = &ips_api.base;
 

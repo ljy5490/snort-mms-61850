@@ -1,5 +1,5 @@
 #include "iso8823.h"
-#include "dpx.h"
+#include "iec61850.h"
 #include "acse.h"
 #include "mms.h"
 
@@ -14,7 +14,7 @@ using namespace snort;
 
 void iso8823_decode(Packet* p, int offset, int type){
     
-    DpxFlowData *dfd = (DpxFlowData *)p->flow->get_flow_data(DpxFlowData::inspector_id);
+    Iec61850FlowData *dfd = (Iec61850FlowData *)p->flow->get_flow_data(Iec61850FlowData::inspector_id);
     if(!dfd){
         //printf("        ----iso8823_decode: dfd empty");
 	return;

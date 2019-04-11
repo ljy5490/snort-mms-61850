@@ -1,5 +1,5 @@
 #include "mms.h"
-#include "dpx.h"
+#include "iec61850.h"
 #include "MmsPdu.h"
 
 #include "detection/detection_engine.h"
@@ -10,7 +10,7 @@ using namespace snort;
 
 void mms_decode(Packet* p, uint8_t *buf, int size){
 
-    DpxFlowData *dfd = (DpxFlowData *)p->flow->get_flow_data(DpxFlowData::inspector_id);
+    Iec61850FlowData *dfd = (Iec61850FlowData *)p->flow->get_flow_data(Iec61850FlowData::inspector_id);
     if(!dfd){
         //printf("        ----mms_decode: dfd empty");
 	return;

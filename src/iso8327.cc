@@ -1,5 +1,5 @@
 #include "iso8327.h"
-#include "dpx.h"
+#include "iec61850.h"
 #include "iso8823.h"
 
 #include "detection/detection_engine.h"
@@ -8,7 +8,7 @@
 using namespace snort;
 
 void iso8327_decode(Packet* p, int offset){
-    DpxFlowData *dfd = (DpxFlowData *)p->flow->get_flow_data(DpxFlowData::inspector_id);
+    Iec61850FlowData *dfd = (Iec61850FlowData *)p->flow->get_flow_data(Iec61850FlowData::inspector_id);
     if(!dfd){
         //printf("        ----iso8327_decode: dfd empty");
 	return;

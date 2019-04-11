@@ -1,5 +1,5 @@
 #include "tpkt.h"
-#include "dpx.h"
+#include "iec61850.h"
 #include "cotp.h"
 
 #include "detection/detection_engine.h"

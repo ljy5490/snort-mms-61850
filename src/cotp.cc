@@ -1,5 +1,5 @@
 #include "cotp.h"
-#include "dpx.h"
+#include "iec61850.h"
 #include "iso8327.h"
 
 #include "detection/detection_engine.h"
@@ -15,7 +15,7 @@ void cotp_decode(Packet* p, int offset){
     
     //printf("%d", *(p->data));
     //cout << hex << header->code << endl;
-    DpxFlowData *dfd = (DpxFlowData *)p->flow->get_flow_data(DpxFlowData::inspector_id);
+    Iec61850FlowData *dfd = (Iec61850FlowData *)p->flow->get_flow_data(Iec61850FlowData::inspector_id);
     if(!dfd){
         //printf("    ----cotp_decode: dfd empty");
         return;

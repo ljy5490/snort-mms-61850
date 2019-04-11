@@ -15,9 +15,9 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //--------------------------------------------------------------------------
-// dpx.cc author Russ Combs <rcombs@sourcefire.com>
+// iec61850.cc author Jianyu Li <jianyu.li@ait.ac.at>
 
-#include "dpx.h"
+#include "iec61850.h"
 
 #include "detection/detection_engine.h"
 #include "events/event_queue.h"
@@ -43,32 +43,32 @@ using namespace snort;
 using namespace std;
 //using namespace rapidjson;
 
-#define DPX_GID 256
-#define DPX_SID 1
+#define IEC61850_GID 256
+#define IEC61850_SID 1
 
-static const char* s_name = "dpx";
-static const char* s_help = "dynamic inspector example";
+static const char* s_name = "iec61850";
+static const char* s_help = "iec61850 mms inspector";
 
-static THREAD_LOCAL ProfileStats dpxPerfStats;
+static THREAD_LOCAL ProfileStats iec61850PerfStats;
 
-static THREAD_LOCAL SimpleStats dpxstats;
+static THREAD_LOCAL SimpleStats iec61850stats;
 
 //-------------------------------------------------------------------------
 // flow stuff
 //-------------------------------------------------------------------------
 
 
-unsigned DpxFlowData::inspector_id = 0;
+unsigned Iec61850FlowData::inspector_id = 0;
 
-void DpxFlowData::init(){
+void Iec61850FlowData::init(){
     inspector_id = FlowData::create_flow_data_id();
 }
 
-DpxFlowData::DpxFlowData() : FlowData(inspector_id){
+Iec61850FlowData::Iec61850FlowData() : FlowData(inspector_id){
     reset();
 }
 
-DpxFlowData::~DpxFlowData(){
+Iec61850FlowData::~Iec61850FlowData(){
 }
 
 //-------------------------------------------------------------------------
@@ -76,10 +76,10 @@ DpxFlowData::~DpxFlowData(){
 //-------------------------------------------------------------------------
 
 
-class Dpx : public Inspector
+class Iec61850 : public Inspector
 {
 public:
-    Dpx(uint16_t port, uint16_t max);
+    Iec61850(uint16_t port, uint16_t max);
 
     void show(SnortConfig*) override;
     void eval(Packet*) override;
@@ -96,14 +96,14 @@ private:
     //list<int> control_action_list;
 };
 
-Dpx::Dpx(uint16_t p, uint16_t m)
+Iec61850::Iec61850(uint16_t p, uint16_t m)
 {
     port = p;
     max = m;
     
 }
 
-void Dpx::show(SnortConfig*)
+void Iec61850::show(SnortConfig*)
 {
     LogMessage("%s config:\n", s_name);
     LogMessage("    port = %d\n", port);
@@ -111,31 +111,32 @@ void Dpx::show(SnortConfig*)
 }
 
 
-void Dpx::eval(Packet* p)
+void Iec61850::eval(Packet* p)
 {
     //cout << p->dsize << endl;
     //cout << p->is_cooked() << endl;
-    //DetectionEngine::queue_event(DPX_GID, 2);
-    //cout << dpxstats.total_packets << endl;
+    //DetectionEngine::queue_event(IEC61850_GID, 2);
+    //cout << iec61850stats.total_packets << endl;
     //
 
-    DpxFlowData *dfd = (DpxFlowData *)p->flow->get_flow_data(DpxFlowData::inspector_id);
+    Iec61850FlowData *dfd = (Iec61850FlowData *)p->flow->get_flow_data(Iec61850FlowData::inspector_id);
 
     if(!dfd){
-        dfd = new DpxFlowData;
+        dfd = new Iec61850FlowData;
 	p->flow->set_flow_data(dfd);
     }
 
+    //printf("------------Hello IEC61850\n");
     tpkt_decode(p);
 
-    ++dpxstats.total_packets;
+    ++iec61850stats.total_packets;
 }
 
 //-------------------------------------------------------------------------
 // module stuff
 //-------------------------------------------------------------------------
 
-static const Parameter dpx_params[] =
+static const Parameter iec61850_params[] =
 {
     { "port", Parameter::PT_PORT, nullptr, nullptr,
       "port to check" },
@@ -146,33 +147,33 @@ static const Parameter dpx_params[] =
     { nullptr, Parameter::PT_MAX, nullptr, nullptr, nullptr }
 };
 
-static const RuleMap dpx_rules[] =
+static const RuleMap iec61850_rules[] =
 {
-    { DPX_SID, "too much data sent to port" },
+    { IEC61850_SID, "too much data sent to port" },
     { 2, "{'control_action':'tapup'}"},
     { 0, nullptr }
 };
 
-class DpxModule : public Module
+class Iec61850Module : public Module
 {
 public:
-    DpxModule() : Module(s_name, s_help, dpx_params)
+    Iec61850Module() : Module(s_name, s_help, iec61850_params)
     { }
 
     unsigned get_gid() const override
-    { return DPX_GID; }
+    { return IEC61850_GID; }
 
     const RuleMap* get_rules() const override
-    { return dpx_rules; }
+    { return iec61850_rules; }
 
     const PegInfo* get_pegs() const override
     { return simple_pegs; }
 
     PegCount* get_counts() const override
-    { return (PegCount*)&dpxstats; }
+    { return (PegCount*)&iec61850stats; }
 
     ProfileStats* get_profile() const override
-    { return &dpxPerfStats; }
+    { return &iec61850PerfStats; }
 
     bool set(const char*, Value& v, SnortConfig*) override;
 
@@ -184,7 +185,7 @@ public:
     uint16_t max;
 };
 
-bool DpxModule::set(const char*, Value& v, SnortConfig*)
+bool Iec61850Module::set(const char*, Value& v, SnortConfig*)
 {
     if ( v.is("port") )
         port = v.get_long();
@@ -203,28 +204,28 @@ bool DpxModule::set(const char*, Value& v, SnortConfig*)
 //-------------------------------------------------------------------------
 
 static Module* mod_ctor()
-{ return new DpxModule; }
+{ return new Iec61850Module; }
 
 static void mod_dtor(Module* m)
 { delete m; }
 
-static Inspector* dpx_ctor(Module* m)
+static Inspector* iec61850_ctor(Module* m)
 {
-    DpxModule* mod = (DpxModule*)m;
-    return new Dpx(mod->port, mod->max);
+    Iec61850Module* mod = (Iec61850Module*)m;
+    return new Iec61850(mod->port, mod->max);
 }
 
-static void dpx_dtor(Inspector* p)
+static void iec61850_dtor(Inspector* p)
 {
     delete p;
 }
 
-static void dpx_init()
+static void iec61850_init()
 {
-    DpxFlowData::init();
+    Iec61850FlowData::init();
 }
 
-static const InspectApi dpx_api
+static const InspectApi iec61850_api
 {
     {
         PT_INSPECTOR,
@@ -247,23 +248,23 @@ static const InspectApi dpx_api
     //PROTO_BIT__ANY_TYPE,
     nullptr, // buffers
     nullptr, // service
-    dpx_init, // pinit
+    iec61850_init, // pinit
     nullptr, // pterm
     nullptr, // tinit
     nullptr, // tterm
-    dpx_ctor,
-    dpx_dtor,
+    iec61850_ctor,
+    iec61850_dtor,
     nullptr, // ssn
     nullptr  // reset
 };
 
 //extern const BaseApi* ips_pkt_num;
-extern const BaseApi* ips_dpx_func;
+extern const BaseApi* ips_iec61850_func;
 
 SO_PUBLIC const BaseApi* snort_plugins[] =
 {
-    &dpx_api.base,
-    ips_dpx_func,
+    &iec61850_api.base,
+    ips_iec61850_func,
     nullptr
 };
 

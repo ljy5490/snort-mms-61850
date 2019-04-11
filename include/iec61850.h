@@ -1,5 +1,5 @@
-#ifndef DPX_H
-#define DPX_H
+#ifndef IEC61850_H
+#define IEC61850_H
 
 #include "flow/flow.h"
 
@@ -13,10 +13,10 @@ struct mms_session_data_t{
     uint8_t type = 100;
 };
 
-class DpxFlowData : public snort::FlowData{
+class Iec61850FlowData : public snort::FlowData{
     public:
-        DpxFlowData();
-	~DpxFlowData() override;
+        Iec61850FlowData();
+	~Iec61850FlowData() override;
 
 	static void init();
 
