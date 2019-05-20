@@ -1,0 +1,6 @@
+alert tcp any any -> any any (msg:"mms initial request"; iec61850_func:initiate_request; sid: 1000;)
+#alert tcp any any -> any any (msg:"mms initial response"; iec61850_func:initiate_response; sid: 1001;)
+#alert tcp any any -> any any (msg:"mms confirmed request"; iec61850_func:confirmed_request; sid: 1002;)
+#alert tcp any any -> any any (msg:"mms confirmed response"; iec61850_func:confirmed_response; sid: 1003;)
+#alert tcp any any -> any any (msg:"mms unconfirmed"; iec61850_func:unconfirmed; sid: 1004;)
+#alert tcp any any -> any any (msg:"mms initiate error"; iec61850_func:initiate_error; sid: 1005;)
